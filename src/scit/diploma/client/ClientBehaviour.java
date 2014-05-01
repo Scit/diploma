@@ -6,6 +6,8 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
+import java.util.Vector;
+
 /**
  * Created by scit on 5/1/14.
  */
@@ -13,13 +15,16 @@ public class ClientBehaviour extends Behaviour {
     private static final int SENDING = 0;
     private static final int RECEIVING = 1;
 
-    private Agent agent;
-
     private boolean done = false;
     private int state = SENDING;
+    private String request;
+    private AID aid;
 
-    public ClientBehaviour(Agent agent) {
-        this.agent = agent;
+    public ClientBehaviour(Agent agent, AID aid, String request) {
+        super(agent);
+
+        this.aid = aid;
+        this.request = request;
     }
 
     public void action() {
@@ -28,14 +33,14 @@ public class ClientBehaviour extends Behaviour {
         switch (state) {
             case SENDING:
                 message = new ACLMessage(ACLMessage.REQUEST);
-                message.addReceiver(new AID("serviceAgent", AID.ISLOCALNAME));
-                message.setContent("123");
-                agent.send(message);
+                message.addReceiver(aid);
+                message.setContent(request);
+                myAgent.send(message);
 
                 state++;
                 break;
             case RECEIVING:
-                message = agent.receive();
+                message = myAgent.receive();
                 if(message != null) {
                     String content = message.getContent();
                     System.out.println(content);
