@@ -11,6 +11,8 @@ import jade.domain.FIPAException;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -19,7 +21,7 @@ import java.util.Vector;
 public class ClientAgent extends Agent {
     protected void setup() {
         AID aid = searchServices().firstElement();
-        String request = "request";
+        String request = "select * from users;";
 
         addBehaviour(new ClientBehaviour(this, aid, request));
     }
@@ -44,5 +46,15 @@ public class ClientAgent extends Agent {
         }
 
         return services;
+    }
+
+    public void onData(List<HashMap<String, Object>> data) {
+        for(HashMap<String, Object> row : data) {
+            for(String column : row.keySet()) {
+                System.out.print(column + ": " + row.get(column).toString() + "; ");
+            }
+
+            System.out.println();
+        }
     }
 }

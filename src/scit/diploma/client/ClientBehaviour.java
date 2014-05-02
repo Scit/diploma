@@ -5,7 +5,11 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -44,6 +48,15 @@ public class ClientBehaviour extends Behaviour {
                 if(message != null) {
                     String content = message.getContent();
                     System.out.println(content);
+
+                    List<HashMap<String, Object>> data = null;
+                    try {
+                        data = (ArrayList<HashMap<String, Object>>) message.getContentObject();
+                    } catch (UnreadableException e) {
+                        e.printStackTrace();
+                    }
+
+                    ((ClientAgent) myAgent).onData(data);
 
                     done = true;
                 } else {

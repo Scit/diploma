@@ -4,12 +4,24 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by scit on 5/1/14.
  */
 public class ServiceBehaviour extends CyclicBehaviour {
+    DBWorker dbw;
+
     public ServiceBehaviour(Agent agent) {
         super(agent);
+
+        dbw = new DBWorker();
     }
 
     public void action() {
@@ -17,7 +29,15 @@ public class ServiceBehaviour extends CyclicBehaviour {
         if (message != null) {
             ACLMessage reply = message.createReply();
             reply.setPerformative(ACLMessage.INFORM);
-            reply.setContent(message.getContent() + "321");
+            String request = message.getContent();
+
+            List<HashMap<String, Object>> data = dbw.execute(request);
+            reply.setContent(request +  " - OK");
+            try {
+                reply.setContentObject((ArrayList) data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             myAgent.send(reply);
         } else {
             block();
