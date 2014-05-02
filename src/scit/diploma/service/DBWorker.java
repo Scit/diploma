@@ -1,5 +1,7 @@
 package scit.diploma.service;
 
+import scit.diploma.utils.SerializableStorage;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,15 +18,16 @@ public class DBWorker {
     private String user = "postgres";
     private String password = "postgres";
 
-    public List<HashMap<String, Object>> execute(String request) {
+    public SerializableStorage execute(String request) {
         ResultSet resultSet = null;
         List<HashMap<String, Object>> data = null;
+        SerializableStorage serializableStorage = null;
 
         try {
             connection = DriverManager.getConnection(url, user, password);
             pst = connection.prepareStatement(request);
             resultSet = pst.executeQuery();
-            data = resultSetToList(resultSet);
+            serializableStorage = new SerializableStorage(resultSet);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +47,7 @@ public class DBWorker {
             }
         }
 
-        return data;
+        return serializableStorage;
     };
 
     private List<HashMap<String, Object>> resultSetToList(ResultSet resultSet) throws Exception{

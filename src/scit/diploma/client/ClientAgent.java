@@ -8,6 +8,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import scit.diploma.utils.SerializableStorage;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
 
@@ -48,10 +49,11 @@ public class ClientAgent extends Agent {
         return services;
     }
 
-    public void onData(List<HashMap<String, Object>> data) {
-        for(HashMap<String, Object> row : data) {
-            for(String column : row.keySet()) {
-                System.out.print(column + ": " + row.get(column).toString() + "; ");
+    public void onData(SerializableStorage serializableStorage) {
+        List<Object[]> data = serializableStorage.getData();
+        for(Object[] row : data) {
+            for(Object cell : row) {
+                System.out.print(cell.toString() + "; ");
             }
 
             System.out.println();

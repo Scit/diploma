@@ -3,6 +3,7 @@ package scit.diploma.service;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import scit.diploma.utils.SerializableStorage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,13 +32,15 @@ public class ServiceBehaviour extends CyclicBehaviour {
             reply.setPerformative(ACLMessage.INFORM);
             String request = message.getContent();
 
-            List<HashMap<String, Object>> data = dbw.execute(request);
+            SerializableStorage serializableStorage = dbw.execute(request);
             reply.setContent(request +  " - OK");
+
             try {
-                reply.setContentObject((ArrayList) data);
+                reply.setContentObject(serializableStorage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             myAgent.send(reply);
         } else {
             block();
