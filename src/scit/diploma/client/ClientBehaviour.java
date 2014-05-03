@@ -6,7 +6,6 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import scit.diploma.utils.SerializableStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,14 +49,14 @@ public class ClientBehaviour extends Behaviour {
                     String content = message.getContent();
                     System.out.println(content);
 
-                    SerializableStorage serializableStorage = null;
-                    try {
-                        serializableStorage = (SerializableStorage) message.getContentObject();
-                    } catch (UnreadableException e) {
-                        e.printStackTrace();
-                    }
+                    //SerializableStorage serializableStorage = null;
+                    //try {
+                    //    serializableStorage = (SerializableStorage) message.getContentObject();
+                    //} catch (UnreadableException e) {
+                    //    e.printStackTrace();
+                    //}
 
-                    ((ClientAgent) myAgent).onData(serializableStorage);
+                    ((ClientAgent) myAgent).onData(null);
 
                     done = true;
                 } else {

@@ -1,9 +1,9 @@
 package scit.diploma;
 
-import scit.diploma.service.DBWorker;
-import scit.diploma.utils.SerializableStorage;
+import scit.diploma.data.Container;
+import scit.diploma.data.QueryMaker;
+import scit.diploma.db.DBWorker;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -12,16 +12,23 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         DBWorker dbw = new DBWorker();
+        Container containerIn;
+        Container containerOut;
 
-        SerializableStorage serializableStorage = dbw.execute("select * from users;");
-        List<Object[]> data = serializableStorage.getData();
+        containerIn = QueryMaker.selectTables();
+        containerOut = dbw.execute(containerIn);
 
-        for(Object[] row : data) {
-            for(Object cell : row) {
-                System.out.print(cell.toString() + "; ");
-            }
+        System.out.println(containerOut.toString());
 
-            System.out.println();
-        }
+
+        containerIn = QueryMaker.selectTableContent("users");
+        containerOut = dbw.execute(containerIn);
+
+        System.out.println(containerOut.toString());
+
+
+        String[] dataRow = new String[] {"login", "password"};
+        containerIn = QueryMaker.insertData(dataRow, containerOut);
+        containerOut = dbw.execute(containerIn);
     }
 }

@@ -1,19 +1,16 @@
 package scit.diploma.client;
 
-import com.sun.xml.internal.fastinfoset.tools.FI_DOM_Or_XML_DOM_SAX_SAXEvent;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
-import scit.diploma.utils.SerializableStorage;
+import scit.diploma.data.Container;
+import scit.diploma.data.QueryMaker;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -22,7 +19,8 @@ import java.util.Vector;
 public class ClientAgent extends Agent {
     protected void setup() {
         AID aid = searchServices().firstElement();
-        String request = "select * from users;";
+        //String request = QueryMaker.selectTableContent("users");
+        String request = "";
 
         addBehaviour(new ClientBehaviour(this, aid, request));
     }
@@ -49,14 +47,7 @@ public class ClientAgent extends Agent {
         return services;
     }
 
-    public void onData(SerializableStorage serializableStorage) {
-        List<Object[]> data = serializableStorage.getData();
-        for(Object[] row : data) {
-            for(Object cell : row) {
-                System.out.print(cell.toString() + "; ");
-            }
-
-            System.out.println();
-        }
+    public void onData(Container container) {
+        //TODO
     }
 }
