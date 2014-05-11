@@ -27,8 +27,8 @@ public class Main {
         System.out.println(containerOut.toString());
 
 
-        String[] dataRow = new String[] {"login", "password"};
-        containerIn = QueryMaker.insertData(dataRow, containerOut);
+        Object[] dataRow = new Object[] {7, "lololo", "ololol"};
+        containerIn = QueryMaker.updateData(dataRow, containerOut);
         containerOut = dbw.execute(containerIn);
     }
 }

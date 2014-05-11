@@ -6,7 +6,9 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import scit.diploma.data.Container;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,14 +23,14 @@ public class ClientBehaviour extends Behaviour {
 
     private boolean done = false;
     private int state = SENDING;
-    private String request;
+    private Container container;
     private AID aid;
 
-    public ClientBehaviour(Agent agent, AID aid, String request) {
+    public ClientBehaviour(Agent agent, AID aid, Container container) {
         super(agent);
 
         this.aid = aid;
-        this.request = request;
+        this.container = container;
     }
 
     public void action() {
@@ -38,26 +40,26 @@ public class ClientBehaviour extends Behaviour {
             case SENDING:
                 message = new ACLMessage(ACLMessage.REQUEST);
                 message.addReceiver(aid);
-                message.setContent(request);
-                myAgent.send(message);
 
+                try {
+                    message.setContentObject(container);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                myAgent.send(message);
                 state++;
                 break;
             case RECEIVING:
                 message = myAgent.receive();
                 if(message != null) {
-                    String content = message.getContent();
-                    System.out.println(content);
+                    try {
+                        container = (Container) message.getContentObject();
+                    } catch (UnreadableException e) {
+                        e.printStackTrace();
+                    }
 
-                    //SerializableStorage serializableStorage = null;
-                    //try {
-                    //    serializableStorage = (SerializableStorage) message.getContentObject();
-                    //} catch (UnreadableException e) {
-                    //    e.printStackTrace();
-                    //}
-
-                    ((ClientAgent) myAgent).onData(null);
-
+                    ((ClientAgent) myAgent).onData(container);
                     done = true;
                 } else {
                     block();
