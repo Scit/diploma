@@ -13,43 +13,43 @@ public class QueryMaker {
     private static final int MODE_UPDATE = 0;
     private static final int MODE_INSERT = 1;
 
-    public static Container selectTables() {
+    public static AgentDataContainer selectTables() {
         String queryString = "\\l";
 
-        return new Container(queryString);
+        return new AgentDataContainer(queryString);
     }
 
-    public static Container selectTableContent(String tableName) {
+    public static AgentDataContainer selectTableContent(String tableName) {
         String queryString = "SELECT * FROM " + tableName;
 
-        return new Container(tableName, queryString);
+        return new AgentDataContainer(tableName, queryString);
     }
 
-    public static Container insertData(Object[] dataRow, Container container) {
-        String queryString = "INSERT INTO " + container.getTableName();
-        StringPair queryParams = generateInsertParams(container.getMetadata());
+    public static AgentDataContainer insertData(Object[] dataRow, AgentDataContainer agentDataContainer) {
+        String queryString = "INSERT INTO " + agentDataContainer.getTableName();
+        StringPair queryParams = generateInsertParams(agentDataContainer.getMetadata());
 
         queryString += queryParams.getFirst() + " VALUES " + queryParams.getSecond();
 
-        NameTypePair[] metadata = prepareMetadata(container, MODE_INSERT);
-        dataRow = prepareObjects(dataRow, container, MODE_INSERT);
+        NameTypePair[] metadata = prepareMetadata(agentDataContainer, MODE_INSERT);
+        dataRow = prepareObjects(dataRow, agentDataContainer, MODE_INSERT);
 
         List<Object[]> data = new ArrayList<Object[]>();
         data.add(dataRow);
-        return new Container(container.getTableName(),queryString, metadata, data);
+        return new AgentDataContainer(agentDataContainer.getTableName(),queryString, metadata, data);
     }
 
-    public static Container updateData(Object[] dataRow, Container container) {
-        String queryString = "UPDATE " + container.getTableName() + " SET ";
-        queryString += generateUpdateParams(container.getMetadata());
+    public static AgentDataContainer updateData(Object[] dataRow, AgentDataContainer agentDataContainer) {
+        String queryString = "UPDATE " + agentDataContainer.getTableName() + " SET ";
+        queryString += generateUpdateParams(agentDataContainer.getMetadata());
         queryString += " WHERE id = ?";
 
-        NameTypePair[] metadata = prepareMetadata(container, MODE_UPDATE);
-        dataRow = prepareObjects(dataRow, container, MODE_UPDATE);
+        NameTypePair[] metadata = prepareMetadata(agentDataContainer, MODE_UPDATE);
+        dataRow = prepareObjects(dataRow, agentDataContainer, MODE_UPDATE);
 
         List<Object[]> data = new ArrayList<Object[]>();
         data.add(dataRow);
-        return new Container(container.getTableName(), queryString, metadata, data);
+        return new AgentDataContainer(agentDataContainer.getTableName(), queryString, metadata, data);
     }
 
     private static StringPair generateInsertParams(NameTypePair[] metadata) {
@@ -87,19 +87,19 @@ public class QueryMaker {
         return updateParams;
     }
 
-    private static Object[] prepareObjects(Object[] dataRow, Container container, int mode) {
+    private static Object[] prepareObjects(Object[] dataRow, AgentDataContainer agentDataContainer, int mode) {
         List<Object> tmpRow = new ArrayList<Object>();
 
         int counter = 0;
         int idIndex = 0;
-        NameTypePair[] metadata = container.getMetadata();
+        NameTypePair[] metadata = agentDataContainer.getMetadata();
         for(NameTypePair column : metadata) {
             if( ! column.getName().equals("id")) {
                 tmpRow.add(dataRow[counter++]);
             } else {
                 idIndex = counter;
 
-                if (dataRow.length == container.getDataWidth()) {
+                if (dataRow.length == agentDataContainer.getDataWidth()) {
                     //for update statements
                     counter++;
                 }
@@ -113,12 +113,12 @@ public class QueryMaker {
         return tmpRow.toArray(new Object[tmpRow.size()]);
     }
 
-    private static NameTypePair[] prepareMetadata(Container container, int mode) {
+    private static NameTypePair[] prepareMetadata(AgentDataContainer agentDataContainer, int mode) {
         List<NameTypePair> tmpMetadata = new ArrayList<NameTypePair>();
 
         int counter = 0;
         int idIndex = 0;
-        NameTypePair[] metadata = container.getMetadata();
+        NameTypePair[] metadata = agentDataContainer.getMetadata();
         for(NameTypePair column : metadata) {
             if( ! column.getName().equals("id")) {
                 tmpMetadata.add(column);

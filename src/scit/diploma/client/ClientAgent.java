@@ -7,13 +7,11 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
-import scit.diploma.data.Container;
-import scit.diploma.data.QueryMaker;
+import scit.diploma.data.AgentDataContainer;
 import scit.diploma.utils.ConditionalVariable;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
@@ -26,7 +24,7 @@ public class ClientAgent extends Agent {
     protected void setup() {
         //AID aid = searchServices().firstElement();
 
-        //Container container = QueryMaker.selectTables();
+        //AgentDataContainer container = QueryMaker.selectTables();
 
         //addBehaviour(new ClientBehaviour(this, aid, container));
         setEnabledO2ACommunication(true, 0);
@@ -75,7 +73,7 @@ public class ClientAgent extends Agent {
         return services;
     }
 
-    public void onData(Container container) {
+    public void onData(AgentDataContainer agentDataContainer) {
         //TODO
     }
 }

@@ -1,10 +1,8 @@
 package scit.diploma;
 
-import scit.diploma.data.Container;
+import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.QueryMaker;
 import scit.diploma.db.DBWorker;
-
-import java.util.List;
 
 /**
  * Created by scit on 5/2/14.
@@ -12,23 +10,23 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         DBWorker dbw = new DBWorker();
-        Container containerIn;
-        Container containerOut;
+        AgentDataContainer agentDataContainerIn;
+        AgentDataContainer agentDataContainerOut;
 
-        containerIn = QueryMaker.selectTables();
-        containerOut = dbw.execute(containerIn);
+        agentDataContainerIn = QueryMaker.selectTables();
+        agentDataContainerOut = dbw.execute(agentDataContainerIn);
 
-        System.out.println(containerOut.toString());
+        System.out.println(agentDataContainerOut.toString());
 
 
-        containerIn = QueryMaker.selectTableContent("users");
-        containerOut = dbw.execute(containerIn);
+        agentDataContainerIn = QueryMaker.selectTableContent("users");
+        agentDataContainerOut = dbw.execute(agentDataContainerIn);
 
-        System.out.println(containerOut.toString());
+        System.out.println(agentDataContainerOut.toString());
 
 
         Object[] dataRow = new Object[] {7, "lololo", "ololol"};
-        containerIn = QueryMaker.updateData(dataRow, containerOut);
-        containerOut = dbw.execute(containerIn);
+        agentDataContainerIn = QueryMaker.updateData(dataRow, agentDataContainerOut);
+        agentDataContainerOut = dbw.execute(agentDataContainerIn);
     }
 }

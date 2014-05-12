@@ -4,9 +4,8 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import scit.diploma.data.Container;
+import scit.diploma.data.AgentDataContainer;
 import scit.diploma.db.DBWorker;
-import scit.diploma.utils.ObjectIntPair;
 
 import java.io.IOException;
 
@@ -28,20 +27,20 @@ public class ServiceBehaviour extends CyclicBehaviour {
             ACLMessage reply = message.createReply();
             reply.setPerformative(ACLMessage.INFORM);
             String request = message.getContent();
-            Container container = null;
+            AgentDataContainer agentDataContainer = null;
 
             // process request
             try {
-                container = (Container) message.getContentObject();
+                agentDataContainer = (AgentDataContainer) message.getContentObject();
             } catch (UnreadableException e) {
                 e.printStackTrace();
             }
 
-            container = dbw.execute(container);
+            agentDataContainer = dbw.execute(agentDataContainer);
 
             // process response
             try {
-                reply.setContentObject(container);
+                reply.setContentObject(agentDataContainer);
             } catch (IOException e) {
                 e.printStackTrace();
             }

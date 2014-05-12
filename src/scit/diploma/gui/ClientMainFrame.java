@@ -1,15 +1,11 @@
 package scit.diploma.gui;
 
-import com.sun.javafx.scene.layout.region.BorderImage;
 import jade.core.*;
 import jade.core.Runtime;
 import jade.gui.GuiEvent;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
-import scit.diploma.data.*;
-import scit.diploma.data.Container;
-import scit.diploma.db.DBWorker;
 import scit.diploma.utils.ConditionalVariable;
 
 import javax.swing.*;

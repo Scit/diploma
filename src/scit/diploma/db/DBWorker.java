@@ -1,8 +1,7 @@
 package scit.diploma.db;
 
-import scit.diploma.data.Container;
+import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.ResponseMaker;
-import scit.diploma.utils.ObjectIntPair;
 
 import java.sql.*;
 
@@ -21,36 +20,36 @@ public class DBWorker {
     private String user = "postgres";
     private String password = "postgres";
 
-    public Container execute(Container container) {
+    public AgentDataContainer execute(AgentDataContainer agentDataContainer) {
         ResultSet resultSet = null;
-        Container outputContainer = null;
+        AgentDataContainer outputAgentDataContainer = null;
 
         try {
 
             connection = DriverManager.getConnection(url, user, password);
 
-            if (container.getRequestString().equals(GET_TABLES_LIST)) {
+            if (agentDataContainer.getRequestString().equals(GET_TABLES_LIST)) {
                 // get tables list request
                 resultSet = connection.getMetaData().getTables(null, "public", "%", new String[]{"TABLE"});
-            } else if (container.getDataLength() > 0) {
+            } else if (agentDataContainer.getDataLength() > 0) {
                 // insert request
-                pst = connection.prepareStatement(container.getRequestString());
+                pst = connection.prepareStatement(agentDataContainer.getRequestString());
 
-                Object[] dataRow = container.getData().get(0);
-                for(int i=0; i < container.getDataWidth(); i++) {
-                    pst.setObject(i+1, dataRow[i], container.getMetadata()[i].getType());
+                Object[] dataRow = agentDataContainer.getData().get(0);
+                for(int i=0; i < agentDataContainer.getDataWidth(); i++) {
+                    pst.setObject(i+1, dataRow[i], agentDataContainer.getMetadata()[i].getType());
                 }
 
                 pst.executeUpdate();
                 resultSet = null;
             } else {
                 // select request
-                pst = connection.prepareStatement(container.getRequestString());
+                pst = connection.prepareStatement(agentDataContainer.getRequestString());
 
                 resultSet = pst.executeQuery();
             }
 
-            outputContainer = ResponseMaker.makeResponse(resultSet, container);
+            outputAgentDataContainer = ResponseMaker.makeResponse(resultSet, agentDataContainer);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +69,7 @@ public class DBWorker {
                 e.printStackTrace();
             }
 
-            return outputContainer;
+            return outputAgentDataContainer;
         }
     }
 }

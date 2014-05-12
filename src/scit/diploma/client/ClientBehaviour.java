@@ -3,16 +3,11 @@ package scit.diploma.client;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import scit.diploma.data.Container;
+import scit.diploma.data.AgentDataContainer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by scit on 5/1/14.
@@ -23,14 +18,14 @@ public class ClientBehaviour extends Behaviour {
 
     private boolean done = false;
     private int state = SENDING;
-    private Container container;
+    private AgentDataContainer agentDataContainer;
     private AID aid;
 
-    public ClientBehaviour(Agent agent, AID aid, Container container) {
+    public ClientBehaviour(Agent agent, AID aid, AgentDataContainer agentDataContainer) {
         super(agent);
 
         this.aid = aid;
-        this.container = container;
+        this.agentDataContainer = agentDataContainer;
     }
 
     public void action() {
@@ -42,7 +37,7 @@ public class ClientBehaviour extends Behaviour {
                 message.addReceiver(aid);
 
                 try {
-                    message.setContentObject(container);
+                    message.setContentObject(agentDataContainer);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -54,12 +49,12 @@ public class ClientBehaviour extends Behaviour {
                 message = myAgent.receive();
                 if(message != null) {
                     try {
-                        container = (Container) message.getContentObject();
+                        agentDataContainer = (AgentDataContainer) message.getContentObject();
                     } catch (UnreadableException e) {
                         e.printStackTrace();
                     }
 
-                    ((ClientAgent) myAgent).onData(container);
+                    ((ClientAgent) myAgent).onData(agentDataContainer);
                     done = true;
                 } else {
                     block();

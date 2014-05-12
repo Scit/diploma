@@ -3,6 +3,7 @@ package scit.diploma.data;
 import scit.diploma.utils.NameTypePair;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 import static scit.diploma.db.DBWorker.*;
@@ -10,36 +11,17 @@ import static scit.diploma.db.DBWorker.*;
 /**
  * Created by scit on 5/6/14.
  */
-public class Container implements Serializable {
-    private String requestString = "";
-    private String tableName = "";
+public class AgentDataContainer implements Serializable {
+    public static final String KEY_TABLE_NAME = "KEY_TABLE_NAME";
+    public static final String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
+    public static final String KEY_SERVICE_NAME = "KEY_SERVICE_NAME";
+
+    private HashMap<String, String> params = null;
     private NameTypePair[] metadata = null;
     private List<Object[]> data = null;
 
-    public Container(String tableName, String requestString, NameTypePair[] metadata, List<Object[]> data) {
-        this.tableName = tableName;
-        this.requestString = requestString;
-        this.metadata = metadata;
-        this.data = data;
-    }
-
-    public Container(String tableName, NameTypePair[] metadata, List<Object[]> data) {
-        this.tableName = tableName;
-        this.metadata = metadata;
-        this.data = data;
-    }
-
-    public Container(String tableName, String requestString) {
-        this.tableName = tableName;
-        this.requestString = requestString;
-    }
-
-    public Container(String requestString) {
-        this.requestString = requestString;
-    }
-
-    public String getRequestString() {
-        return requestString;
+    public AgentDataContainer() {
+        params = new HashMap<String, String>();
     }
 
     public NameTypePair[] getMetadata() {
@@ -48,6 +30,14 @@ public class Container implements Serializable {
 
     public List<Object[]> getData() {
         return data;
+    }
+
+    public void setMetadata(NameTypePair[] metadata) {
+        this.metadata = metadata;
+    }
+
+    public void setData(List<Object[]> data) {
+        this.data = data;
     }
 
     public int getDataWidth() {
@@ -66,8 +56,16 @@ public class Container implements Serializable {
         return data.size();
     }
 
-    public String getTableName() {
-        return tableName;
+    public HashMap<String, String> getParams() {
+        return params;
+    }
+
+    public String getParam(String key) {
+        return params.get(key);
+    }
+
+    public void setParam(String key, String value) {
+        params.put(key, value);
     }
 
     public String toString() {

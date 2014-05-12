@@ -8,13 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static scit.diploma.db.DBWorker.STATUS_OK;
-
 /**
  * Created by scit on 5/6/14.
  */
 public class ResponseMaker {
-    public static Container makeResponse(ResultSet resultSet, Container container) {
+    public static AgentDataContainer makeResponse(ResultSet resultSet, AgentDataContainer agentDataContainer) {
         NameTypePair[] metadata = null;
         List<Object[]> data = null;
 
@@ -45,6 +43,6 @@ public class ResponseMaker {
             }
         }
 
-        return new Container(container.getTableName(), metadata, data);
+        return new AgentDataContainer(agentDataContainer.getTableName(), metadata, data);
     }
 }

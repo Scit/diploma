@@ -1,6 +1,6 @@
 package scit.diploma.gui;
 
-import scit.diploma.data.Container;
+import scit.diploma.data.AgentDataContainer;
 import scit.diploma.utils.NameTypePair;
 
 import javax.swing.*;
@@ -14,20 +14,20 @@ public class ClientTable extends JTable {
         super();
     }
 
-    public ClientTable(Container container) {
+    public ClientTable(AgentDataContainer agentDataContainer) {
         super();
 
-        fillTable(container);
+        fillTable(agentDataContainer);
     }
 
-    public void fillTable(Container container) {
+    public void fillTable(AgentDataContainer agentDataContainer) {
         DefaultTableModel tableModel=new DefaultTableModel();
 
-        for(NameTypePair mdata : container.getMetadata()) {
+        for(NameTypePair mdata : agentDataContainer.getMetadata()) {
             tableModel.addColumn(mdata.getName());
         }
 
-        for(Object[] dataRow : container.getData()) {
+        for(Object[] dataRow : agentDataContainer.getData()) {
             tableModel.addRow(dataRow);
         }
 
