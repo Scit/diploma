@@ -5,6 +5,7 @@ import scit.diploma.utils.StringPair;
 
 import java.util.ArrayList;
 import java.util.List;
+import static scit.diploma.data.AgentDataContainer.*;
 
 /**
  * Created by scit on 5/2/14.
@@ -16,17 +17,23 @@ public class QueryMaker {
     public static AgentDataContainer selectTables() {
         String queryString = "\\l";
 
-        return new AgentDataContainer(queryString);
+        AgentDataContainer agentDataContainer = new AgentDataContainer();
+        agentDataContainer.setParam(KEY_REQUEST_STRING, queryString);
+        return agentDataContainer;
     }
 
     public static AgentDataContainer selectTableContent(String tableName) {
         String queryString = "SELECT * FROM " + tableName;
 
-        return new AgentDataContainer(tableName, queryString);
+        AgentDataContainer agentDataContainer = new AgentDataContainer();
+        agentDataContainer.setParam(KEY_REQUEST_STRING, queryString);
+        agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+        return agentDataContainer;
     }
 
     public static AgentDataContainer insertData(Object[] dataRow, AgentDataContainer agentDataContainer) {
-        String queryString = "INSERT INTO " + agentDataContainer.getTableName();
+        String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
+        String queryString = "INSERT INTO " + tableName;
         StringPair queryParams = generateInsertParams(agentDataContainer.getMetadata());
 
         queryString += queryParams.getFirst() + " VALUES " + queryParams.getSecond();
@@ -36,11 +43,16 @@ public class QueryMaker {
 
         List<Object[]> data = new ArrayList<Object[]>();
         data.add(dataRow);
-        return new AgentDataContainer(agentDataContainer.getTableName(),queryString, metadata, data);
+
+        agentDataContainer = new AgentDataContainer(metadata, data);
+        agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+
+        return agentDataContainer;
     }
 
     public static AgentDataContainer updateData(Object[] dataRow, AgentDataContainer agentDataContainer) {
-        String queryString = "UPDATE " + agentDataContainer.getTableName() + " SET ";
+        String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
+        String queryString = "UPDATE " + tableName + " SET ";
         queryString += generateUpdateParams(agentDataContainer.getMetadata());
         queryString += " WHERE id = ?";
 
@@ -49,7 +61,12 @@ public class QueryMaker {
 
         List<Object[]> data = new ArrayList<Object[]>();
         data.add(dataRow);
-        return new AgentDataContainer(agentDataContainer.getTableName(), queryString, metadata, data);
+
+        agentDataContainer = new AgentDataContainer(metadata, data);
+        agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+        agentDataContainer.setParam(KEY_REQUEST_STRING, queryString);
+
+        return agentDataContainer;
     }
 
     private static StringPair generateInsertParams(NameTypePair[] metadata) {

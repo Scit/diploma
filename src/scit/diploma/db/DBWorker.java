@@ -4,6 +4,7 @@ import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.ResponseMaker;
 
 import java.sql.*;
+import static scit.diploma.data.AgentDataContainer.*;
 
 /**
  * Created by scit on 5/1/14.
@@ -28,12 +29,12 @@ public class DBWorker {
 
             connection = DriverManager.getConnection(url, user, password);
 
-            if (agentDataContainer.getRequestString().equals(GET_TABLES_LIST)) {
+            if (agentDataContainer.getParam(KEY_REQUEST_STRING).equals(GET_TABLES_LIST)) {
                 // get tables list request
                 resultSet = connection.getMetaData().getTables(null, "public", "%", new String[]{"TABLE"});
             } else if (agentDataContainer.getDataLength() > 0) {
                 // insert request
-                pst = connection.prepareStatement(agentDataContainer.getRequestString());
+                pst = connection.prepareStatement(agentDataContainer.getParam(KEY_REQUEST_STRING));
 
                 Object[] dataRow = agentDataContainer.getData().get(0);
                 for(int i=0; i < agentDataContainer.getDataWidth(); i++) {
@@ -44,7 +45,7 @@ public class DBWorker {
                 resultSet = null;
             } else {
                 // select request
-                pst = connection.prepareStatement(agentDataContainer.getRequestString());
+                pst = connection.prepareStatement(agentDataContainer.getParam(KEY_REQUEST_STRING));
 
                 resultSet = pst.executeQuery();
             }

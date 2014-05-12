@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import static scit.diploma.data.AgentDataContainer.*;
 
 /**
  * Created by scit on 5/6/14.
@@ -43,6 +44,10 @@ public class ResponseMaker {
             }
         }
 
-        return new AgentDataContainer(agentDataContainer.getTableName(), metadata, data);
+        String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
+        agentDataContainer = new AgentDataContainer(metadata,data);
+        agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+
+        return agentDataContainer;
     }
 }

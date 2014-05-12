@@ -24,6 +24,13 @@ public class AgentDataContainer implements Serializable {
         params = new HashMap<String, String>();
     }
 
+    public AgentDataContainer(NameTypePair[] metadata, List<Object[]> data) {
+        params = new HashMap<String, String>();
+
+        this.metadata = metadata;
+        this.data = data;
+    }
+
     public NameTypePair[] getMetadata() {
         return metadata;
     }
@@ -68,11 +75,16 @@ public class AgentDataContainer implements Serializable {
         params.put(key, value);
     }
 
+    public void clearParams() {
+        this.params = new HashMap<String, String>();
+    }
+
     public String toString() {
         String string = "";
 
-        string += requestString + "\n";
-        string += tableName + "\n";
+        for(String key : params.keySet()) {
+            string += key + ": " + params.get(key) + "\n";
+        }
 
         if (metadata != null) {
             for(NameTypePair item : metadata) {
