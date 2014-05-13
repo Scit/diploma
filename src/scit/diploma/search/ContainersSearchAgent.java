@@ -14,24 +14,6 @@ import java.lang.reflect.Method;
  */
 public class ContainersSearchAgent extends Agent {
     protected void setup() {
-        setEnabledO2ACommunication(true, 0);
-        Object[] args = getArguments();
-        if(args.length > 0) {
-            ConditionalVariable startUpLatch = (ConditionalVariable) args[0];
-            startUpLatch.signal();
-        }
-
-        addBehaviour(new CyclicBehaviour(this) {
-            @Override
-            public void action() {
-                String s = (String) myAgent.getO2AObject();
-                if(s != null) {
-                } else {
-                    block();
-                }
-            }
-        });
-
         addBehaviour(new AMSListenerBehaviour());
     }
 }

@@ -13,9 +13,9 @@ public class ServiceAgent extends Agent {
     public static final String SERVICE_TYPE = "JADE_DATABASE_ACCESS";
 
     protected void setup() {
-        addBehaviour(new ServiceBehaviour(this));
+        //addBehaviour(new ServiceBehaviour(this));
 
-        register();
+        //register();
     }
 
     protected void takeDown() {
@@ -44,5 +44,13 @@ public class ServiceAgent extends Agent {
         } catch (FIPAException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void beforeMove() {
+        System.out.println("before " + here());
+    }
+
+    protected void afterMove() {
+        System.out.println("after " + here());
     }
 }

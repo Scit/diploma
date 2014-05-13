@@ -9,6 +9,7 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import scit.diploma.utils.ConditionalVariable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -16,30 +17,39 @@ import java.util.Set;
 /**
  * Created by scit on 5/12/14.
  */
-public class ContainersManager {
+public final class ContainersManager {
     private static ContainerController containerController;
     private static AgentController ac;
 
     private static HashMap<ContainerID, Container> containers;
 
     public static List<Container> getContainersList() throws StaleProxyException {
-        init();
-        ac.putO2AObject("String", AgentController.ASYNC);
-
-        return null;
+        if(containers != null) {
+            return new ArrayList<Container>(containers.values());
+        } else {
+            return new ArrayList<Container>();
+        }
     }
 
-    private static void init() {
+    public static ContainerController getProjectContainerController() {
+        return containerController;
+    }
+
+    public static void init() {
         if(containerController == null ) {
             createProjectContainer("82.209.80.43", "1099");
         }
         if(ac == null) {
             createSearchAgent();
         }
+        if(containers == null) {
+            containers = new HashMap<ContainerID, Container>();
+        }
     }
 
     public static void onSearchAgentResponse(ContainerID containerID) {
-        System.out.println(containerID.getName());
+        System.out.println(containerID.getName() + " - " + containerID.getMain());
+        containers.put(containerID, new Container(containerID));
     }
 
     private static void createProjectContainer(String host, String port) {
@@ -48,20 +58,17 @@ public class ContainersManager {
         p.setParameter(Profile.MAIN_HOST, host);
         p.setParameter(Profile.MAIN_PORT, port);
         ContainerController cc = runtime.createAgentContainer(p);
+        runtime.createAgentContainer(new ProfileImpl());
 
         containerController = cc;
     }
 
     private static void createSearchAgent() {
         try {
-            ConditionalVariable startUpLatch = new ConditionalVariable();
-            AgentController ac = containerController.createNewAgent("searchAgent", "scit.diploma.search.ContainersSearchAgent", new Object[] {startUpLatch});
+            AgentController ac = containerController.createNewAgent("searchAgent", "scit.diploma.search.ContainersSearchAgent", null);
             ContainersManager.ac = ac;
             ac.start();
-            startUpLatch.waitOn();
         } catch (StaleProxyException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
