@@ -1,27 +1,24 @@
 package scit.diploma.ctrl;
 
-import jade.core.ContainerID;
-import jade.core.Profile;
+import jade.core.*;
 import jade.core.Runtime;
-import jade.core.ProfileImpl;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
-import scit.diploma.utils.ConditionalVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by scit on 5/12/14.
  */
 public final class ContainersManager {
+    public static final String CONTROLLER_AGENT_NAME = "controllerAgent";
     private static ContainerController containerController;
     private static AgentController ac;
 
-    private static HashMap<ContainerID, Container> containers;
+    private static HashMap<String, Container> containers;
 
     public static List<Container> getContainersList() throws StaleProxyException {
         if(containers != null) {
@@ -40,18 +37,21 @@ public final class ContainersManager {
             createProjectContainer("82.209.80.43", "1099");
         }
         if(ac == null) {
-            createSearchAgent();
+            createControllerAgent();
         }
         if(containers == null) {
-            containers = new HashMap<ContainerID, Container>();
+            containers = new HashMap<String, Container>();
         }
     }
 
     public static void onSearchAgentResponse(ContainerID containerID) {
         System.out.println(containerID.getName() + " - " + containerID.getMain());
-        if(containers.containsKey(containerID) == false) {
-            containers.put(containerID, new Container(containerID));
-        }
+        containers.put(containerID.getName(), new Container(containerID));
+    }
+
+    public static void onServiceAgentMoved(ContainerID containerID, AID serviceAID) {
+        System.out.println("Moved: " + containerID.getName() + " " + serviceAID.getName());
+        containers.get(containerID.getName()).onEvent(serviceAID, Container.EVENT_SERVICE_AFTER_MOVE);
     }
 
     private static void createProjectContainer(String host, String port) {
@@ -65,9 +65,9 @@ public final class ContainersManager {
         containerController = cc;
     }
 
-    private static void createSearchAgent() {
+    private static void createControllerAgent() {
         try {
-            AgentController ac = containerController.createNewAgent("searchAgent", "scit.diploma.search.ContainersSearchAgent", null);
+            AgentController ac = containerController.createNewAgent(CONTROLLER_AGENT_NAME, "scit.diploma.search.ControllerAgent", null);
             ContainersManager.ac = ac;
             ac.start();
         } catch (StaleProxyException e) {

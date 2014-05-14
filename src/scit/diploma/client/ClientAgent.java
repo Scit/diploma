@@ -26,6 +26,7 @@ public class ClientAgent extends Agent {
     private AID serviceAID = null;
 
     protected void setup() {
+        System.out.println("Started: " + getName());
         setEnabledO2ACommunication(true, 0);
         Object[] args = getArguments();
 

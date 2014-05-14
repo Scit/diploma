@@ -1,5 +1,6 @@
 package scit.diploma;
 
+import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 import scit.diploma.ctrl.Container;
 import scit.diploma.ctrl.ContainersManager;
@@ -24,9 +25,9 @@ public class Main {
 
         try {
             List<Container> c = ContainersManager.getContainersList();
-            c.get(2).doActivate();
             System.out.println(c.size());
-        } catch (StaleProxyException e) {
+            c.get(2).doActivate();
+        } catch (ControllerException e) {
             e.printStackTrace();
         }
 

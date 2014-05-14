@@ -2,10 +2,7 @@ package scit.diploma.ctrl;
 
 import jade.core.AID;
 import jade.core.ContainerID;
-import jade.wrapper.AgentContainer;
-import jade.wrapper.AgentController;
-import jade.wrapper.ContainerController;
-import jade.wrapper.StaleProxyException;
+import jade.wrapper.*;
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.utils.AgentData;
 import scit.diploma.utils.AgentEvents;
@@ -45,18 +42,17 @@ public class Container implements AgentEvents, AgentData {
         return this.serviceAID;
     }
 
-    public void doActivate() throws StaleProxyException {
+    public void doActivate() throws ControllerException {
         if (isActive()) { return; }
 
         ConditionalVariable startUpLatch = new ConditionalVariable();
         ContainerController cc = ContainersManager.getProjectContainerController();
 
         String agentName = PrefixGenerator.getUniquePrefix() + SERVICE_NAME_TEMPLATE;
-        AgentController ac = cc.createNewAgent(agentName, "scit.diploma.serviceAID.ServiceAgent", new Object[] {startUpLatch, this});
-        System.out.println(containerID);
-        System.out.println(ac);
+        AgentController ac = cc.createNewAgent(agentName, "scit.diploma.service.ServiceAgent", new Object[] {startUpLatch, containerID});
         ac.start();
-        ac.move(containerID);
+        System.out.println("From: " + cc.getContainerName());
+        System.out.println("To: " + containerID.getName());
     }
 
     public void doExecute(AgentDataContainer agentDataContainer) {
@@ -71,7 +67,7 @@ public class Container implements AgentEvents, AgentData {
                 ConditionalVariable startUpLatch = new ConditionalVariable();
                 ContainerController cc = ContainersManager.getProjectContainerController();
 
-                String agentName = PrefixGenerator.getUniquePrefix() + SERVICE_NAME_TEMPLATE;
+                String agentName = PrefixGenerator.getUniquePrefix() + CLIENT_NAME_TEMPLATE;
                 try {
                     AgentController ac = cc.createNewAgent(agentName, "scit.diploma.client.ClientAgent", new Object[] {startUpLatch, this, serviceAID});
                     ac.start();
