@@ -7,7 +7,10 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import scit.diploma.ctrl.Container;
 import scit.diploma.data.AgentDataContainer;
+import scit.diploma.utils.AgentData;
+import scit.diploma.utils.AgentInterface;
 import scit.diploma.utils.ConditionalVariable;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
@@ -19,36 +22,28 @@ import java.util.Vector;
  * Created by scit on 5/1/14.
  */
 public class ClientAgent extends Agent {
-    Method m = null;
+    private AgentInterface agentInterface = null;
+    private AID serviceAID = null;
 
     protected void setup() {
-        //AID aid = searchServices().firstElement();
-
-        //AgentDataContainer container = QueryMaker.selectTables();
-
-        //addBehaviour(new ClientBehaviour(this, aid, container));
         setEnabledO2ACommunication(true, 0);
         Object[] args = getArguments();
-        if(args.length > 0) {
-            ConditionalVariable startUpLatch = (ConditionalVariable) args[0];
-            startUpLatch.signal();
 
-            m = (Method) args[1];
+        switch(args.length) {
+            case 3:
+                serviceAID = (AID) args[2];
+            case 2:
+                agentInterface = (AgentInterface) args[1];
+            case 1:
+                ConditionalVariable startUpLatch = (ConditionalVariable) args[0];
+                startUpLatch.signal();
         }
 
-        System.out.println("Ku");
-        addBehaviour(new CyclicBehaviour(this) {
-            @Override
-            public void action() {
-                String s = (String) myAgent.getO2AObject();
-                if(s != null) {
-                    System.out.println(s);
+        addBehaviour(new O2ABehaviour());
+    }
 
-                } else {
-                    block();
-                }
-            }
-        });
+    public AID getServiceAID() {
+        return serviceAID;
     }
 
     public Vector<AID> searchServices() {
@@ -73,7 +68,7 @@ public class ClientAgent extends Agent {
         return services;
     }
 
-    public void onData(AgentDataContainer agentDataContainer) {
-        //TODO
+    public AgentInterface getAgentInterface() {
+        return agentInterface;
     }
 }

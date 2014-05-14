@@ -49,7 +49,9 @@ public final class ContainersManager {
 
     public static void onSearchAgentResponse(ContainerID containerID) {
         System.out.println(containerID.getName() + " - " + containerID.getMain());
-        containers.put(containerID, new Container(containerID));
+        if(containers.containsKey(containerID) == false) {
+            containers.put(containerID, new Container(containerID));
+        }
     }
 
     private static void createProjectContainer(String host, String port) {

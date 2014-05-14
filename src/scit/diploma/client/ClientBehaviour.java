@@ -6,6 +6,7 @@ import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import scit.diploma.data.AgentDataContainer;
+import scit.diploma.utils.AgentData;
 
 import java.io.IOException;
 
@@ -21,10 +22,10 @@ public class ClientBehaviour extends Behaviour {
     private AgentDataContainer agentDataContainer;
     private AID aid;
 
-    public ClientBehaviour(Agent agent, AID aid, AgentDataContainer agentDataContainer) {
+    public ClientBehaviour(Agent agent, AgentDataContainer agentDataContainer) {
         super(agent);
 
-        this.aid = aid;
+        this.aid = ((ClientAgent) myAgent).getServiceAID();
         this.agentDataContainer = agentDataContainer;
     }
 
@@ -54,7 +55,9 @@ public class ClientBehaviour extends Behaviour {
                         e.printStackTrace();
                     }
 
-                    ((ClientAgent) myAgent).onData(agentDataContainer);
+                    AgentData agentData = (AgentData) ((ClientAgent) myAgent).getAgentInterface();
+                    AID aid = new AID(myAgent.getName(), AID.ISLOCALNAME);
+                    agentData.onData(aid, agentDataContainer);
                     done = true;
                 } else {
                     block();
