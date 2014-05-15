@@ -2,22 +2,17 @@ package scit.diploma.client;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
-import scit.diploma.ctrl.Container;
-import scit.diploma.data.AgentDataContainer;
-import scit.diploma.utils.AgentData;
 import scit.diploma.utils.AgentEvents;
 import scit.diploma.utils.AgentInterface;
 import scit.diploma.utils.ConditionalVariable;
 
 import static scit.diploma.service.ServiceAgent.SERVICE_TYPE;
 
-import java.lang.reflect.Method;
 import java.util.Vector;
 
 /**
@@ -28,7 +23,6 @@ public class ClientAgent extends Agent {
     private AID serviceAID = null;
 
     protected void setup() {
-        System.out.println("Started: " + getName());
         setEnabledO2ACommunication(true, 0);
         Object[] args = getArguments();
 

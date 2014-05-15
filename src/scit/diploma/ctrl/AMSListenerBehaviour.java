@@ -4,7 +4,6 @@ import jade.core.ContainerID;
 import jade.domain.introspection.AMSSubscriber;
 import jade.domain.introspection.AddedContainer;
 import jade.domain.introspection.Event;
-import scit.diploma.ctrl.ContainersManager;
 
 import java.util.Map;
 
@@ -22,7 +21,7 @@ public class AMSListenerBehaviour extends AMSSubscriber {
             AddedContainer event = (AddedContainer) ev;
             ContainerID addedContainer = event.getContainer();
 
-            ContainersManager.onSearchAgentResponse(addedContainer);
+            ContainerHoldersManager.onContainerAdded(addedContainer);
         }
     }
 

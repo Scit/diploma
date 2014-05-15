@@ -1,12 +1,9 @@
 package scit.diploma;
 
 import jade.wrapper.ControllerException;
-import jade.wrapper.StaleProxyException;
-import scit.diploma.ctrl.Container;
-import scit.diploma.ctrl.ContainersManager;
-import scit.diploma.data.AgentDataContainer;
+import scit.diploma.ctrl.ContainerHolder;
+import scit.diploma.ctrl.ContainerHoldersManager;
 import scit.diploma.data.QueryMaker;
-import scit.diploma.db.DBWorker;
 
 import java.io.*;
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.List;
  */
 public class Main {
     public static void main(String[] args) {
-        ContainersManager.init();
+        ContainerHoldersManager.init();
         try {
             System.in.read(new byte[5]);
         } catch (IOException e) {
@@ -24,7 +21,7 @@ public class Main {
         }
 
         try {
-            List<Container> c = ContainersManager.getContainersList();
+            List<ContainerHolder> c = ContainerHoldersManager.getContainersList();
             c.get(1).doActivate();
             System.in.read(new byte[5]);
             c.get(1).doExecute(QueryMaker.selectTables());

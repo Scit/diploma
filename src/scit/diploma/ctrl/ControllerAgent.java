@@ -7,8 +7,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import scit.diploma.ctrl.AMSListenerBehaviour;
-import scit.diploma.ctrl.ContainersManager;
 
 /**
  * Created by scit on 5/12/14.
@@ -17,7 +15,6 @@ public class ControllerAgent extends Agent {
     public static final String CONTROLLER_AGENT_CONVERSATION_ID = "CONTROLLER_AGENT_CONVERSATION_ID";
 
     protected void setup() {
-        System.out.println("Started: " + getName());
         addBehaviour(new AMSListenerBehaviour());
 
         addBehaviour(new CyclicBehaviour() {
@@ -28,7 +25,7 @@ public class ControllerAgent extends Agent {
                 if (msg != null) {
                     try {
                         ContainerID c = (ContainerID) msg.getContentObject();
-                        ContainersManager.onServiceAgentMoved(c, msg.getSender());
+                        ContainerHoldersManager.onServiceAgentMoved(c, msg.getSender());
                     } catch (UnreadableException e) {
                         e.printStackTrace();
                     }

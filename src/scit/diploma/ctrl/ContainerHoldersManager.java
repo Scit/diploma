@@ -5,6 +5,7 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import scit.diploma.data.AgentDataContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,18 +14,18 @@ import java.util.List;
 /**
  * Created by scit on 5/12/14.
  */
-public final class ContainersManager {
+public final class ContainerHoldersManager {
     public static final String CONTROLLER_AGENT_NAME = "controllerAgent";
     private static ContainerController containerController;
     private static AgentController ac;
 
-    private static HashMap<String, Container> containers;
+    private static HashMap<String, ContainerHolder> containers;
 
-    public static List<Container> getContainersList() throws StaleProxyException {
+    public static List<ContainerHolder> getContainersList() throws StaleProxyException {
         if(containers != null) {
-            return new ArrayList<Container>(containers.values());
+            return new ArrayList<ContainerHolder>(containers.values());
         } else {
-            return new ArrayList<Container>();
+            return new ArrayList<ContainerHolder>();
         }
     }
 
@@ -40,18 +41,29 @@ public final class ContainersManager {
             createControllerAgent();
         }
         if(containers == null) {
-            containers = new HashMap<String, Container>();
+            containers = new HashMap<String, ContainerHolder>();
         }
     }
 
-    public static void onSearchAgentResponse(ContainerID containerID) {
+    public static void onContainerAdded(ContainerID containerID) {
         System.out.println(containerID.getName() + " - " + containerID.getMain());
-        containers.put(containerID.getName(), new Container(containerID));
+        ContainerHolder containerHolder = new ContainerHolder(containerID);
+        containers.put(containerID.getName(), containerHolder);
+
+        System.out.println("*** Container has been added: " + containerHolder.getName() + " ***");
+    }
+
+    public static void onContainerHolderTakeData(ContainerHolder containerHolder, AgentDataContainer data) {
+        System.out.println("*** Container has been taken the data: " + containerHolder.getName() + " ***");
+        System.out.println("*** Container's data: " + data.toString() + " ***");
+    }
+
+    public static void onContainerHolderActive(ContainerHolder containerHolder) {
+        System.out.println("*** Container is active: " + containerHolder.getName() + " ***");
     }
 
     public static void onServiceAgentMoved(ContainerID containerID, AID serviceAID) {
-        System.out.println("Moved: " + containerID.getName() + " " + serviceAID.getName());
-        containers.get(containerID.getName()).onEvent(serviceAID, Container.EVENT_SERVICE_AFTER_MOVE);
+        containers.get(containerID.getName()).onEvent(serviceAID, ContainerHolder.EVENT_SERVICE_AFTER_MOVE);
     }
 
     private static void createProjectContainer(String host, String port) {
@@ -68,7 +80,7 @@ public final class ContainersManager {
     private static void createControllerAgent() {
         try {
             AgentController ac = containerController.createNewAgent(CONTROLLER_AGENT_NAME, "scit.diploma.ctrl.ControllerAgent", null);
-            ContainersManager.ac = ac;
+            ContainerHoldersManager.ac = ac;
             ac.start();
         } catch (StaleProxyException e) {
             e.printStackTrace();

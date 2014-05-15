@@ -4,7 +4,6 @@ import jade.core.AID;
 import jade.core.ContainerID;
 import jade.wrapper.*;
 import scit.diploma.data.AgentDataContainer;
-import scit.diploma.data.QueryMaker;
 import scit.diploma.utils.AgentData;
 import scit.diploma.utils.AgentEvents;
 import scit.diploma.utils.ConditionalVariable;
@@ -13,7 +12,7 @@ import scit.diploma.utils.PrefixGenerator;
 /**
  * Created by scit on 5/12/14.
  */
-public class Container implements AgentEvents, AgentData {
+public class ContainerHolder implements AgentEvents, AgentData {
     private static final String SERVICE_NAME_TEMPLATE = "-serviceAgent";
     private static final String CLIENT_NAME_TEMPLATE = "-clientAgent";
 
@@ -22,14 +21,18 @@ public class Container implements AgentEvents, AgentData {
     private ContainerID containerID;
     private boolean isActive = false;
 
-    public Container(AgentController client, AID serviceAID, ContainerID containerID) {
+/*    public ContainerHolder(AgentController client, AID serviceAID, ContainerID containerID) {
         this.client = client;
         this.serviceAID = serviceAID;
         this.containerID = containerID;
+    }*/
+
+    public ContainerHolder(ContainerID containerID) {
+        this.containerID = containerID;
     }
 
-    public Container(ContainerID containerID) {
-        this.containerID = containerID;
+    public String getName() {
+        return containerID.getName();
     }
 
     public boolean isActive() {
@@ -44,7 +47,7 @@ public class Container implements AgentEvents, AgentData {
         if (isActive()) { return; }
 
         ConditionalVariable startUpLatch = new ConditionalVariable();
-        ContainerController cc = ContainersManager.getProjectContainerController();
+        ContainerController cc = ContainerHoldersManager.getProjectContainerController();
 
         String agentName = PrefixGenerator.getUniquePrefix() + SERVICE_NAME_TEMPLATE;
         AgentController ac = cc.createNewAgent(agentName, "scit.diploma.service.ServiceAgent", new Object[] {startUpLatch, containerID});
@@ -73,7 +76,7 @@ public class Container implements AgentEvents, AgentData {
             case AgentEvents.EVENT_SERVICE_AFTER_MOVE:
                 this.serviceAID = aid;
                 ConditionalVariable startUpLatch = new ConditionalVariable();
-                ContainerController cc = ContainersManager.getProjectContainerController();
+                ContainerController cc = ContainerHoldersManager.getProjectContainerController();
 
                 String agentName = PrefixGenerator.getUniquePrefix() + CLIENT_NAME_TEMPLATE;
                 try {
@@ -88,13 +91,13 @@ public class Container implements AgentEvents, AgentData {
                 }
                 break;
             case AgentEvents.EVENT_CLIENT_READY:
-                System.out.println("Client ready: " + aid.getName());
                 isActive = true;
+                ContainerHoldersManager.onContainerHolderActive(this);
         }
     }
 
     @Override
     public void onData(AID aid, AgentDataContainer agentDataContainer) {
-        System.out.println("KU-KU-KU: " + agentDataContainer.toString());
+        ContainerHoldersManager.onContainerHolderTakeData(this, agentDataContainer);
     }
 }

@@ -4,7 +4,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.ContainerID;
 import jade.lang.acl.ACLMessage;
-import scit.diploma.ctrl.ContainersManager;
+import scit.diploma.ctrl.ContainerHoldersManager;
 import scit.diploma.ctrl.ControllerAgent;
 import scit.diploma.utils.AgentInterface;
 import scit.diploma.utils.ConditionalVariable;
@@ -20,7 +20,6 @@ public class ServiceAgent extends Agent {
     public AgentInterface agentInterface = null;
 
     protected void setup() {
-        System.out.println("Started: " + getName());
         setEnabledO2ACommunication(true, 0);
         Object[] args = getArguments();
         ContainerID dest = null;
@@ -33,7 +32,6 @@ public class ServiceAgent extends Agent {
                 startUpLatch.signal();
         }
 
-        System.out.println("dest: " + dest);
         doMove(dest);
     }
 
@@ -47,7 +45,7 @@ public class ServiceAgent extends Agent {
         System.out.println("After move: " + here());
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setConversationId(ControllerAgent.CONTROLLER_AGENT_CONVERSATION_ID);
-        AID dest = new AID(ContainersManager.CONTROLLER_AGENT_NAME, AID.ISLOCALNAME);
+        AID dest = new AID(ContainerHoldersManager.CONTROLLER_AGENT_NAME, AID.ISLOCALNAME);
         msg.setContent(getName());
         try {
             msg.setContentObject(here());
