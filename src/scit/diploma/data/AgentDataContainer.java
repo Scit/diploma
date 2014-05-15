@@ -12,9 +12,9 @@ import static scit.diploma.db.DBWorker.*;
  * Created by scit on 5/6/14.
  */
 public class AgentDataContainer implements Serializable {
-    public static final String KEY_TABLE_NAME = "KEY_TABLE_NAME";
-    public static final String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
-    public static final String KEY_SERVICE_NAME = "KEY_SERVICE_NAME";
+    public final static String KEY_TABLE_NAME = "KEY_TABLE_NAME";
+    public final static String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
+    public final static String KEY_SERVICE_NAME = "KEY_SERVICE_NAME";
 
     private HashMap<String, String> params = null;
     private NameTypePair[] metadata = null;

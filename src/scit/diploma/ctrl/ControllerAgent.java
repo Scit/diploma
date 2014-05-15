@@ -1,4 +1,4 @@
-package scit.diploma.search;
+package scit.diploma.ctrl;
 
 
 import jade.core.Agent;
@@ -7,11 +7,8 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import scit.diploma.ctrl.AMSListenerBehaviour;
 import scit.diploma.ctrl.ContainersManager;
-import scit.diploma.utils.ConditionalVariable;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Created by scit on 5/12/14.

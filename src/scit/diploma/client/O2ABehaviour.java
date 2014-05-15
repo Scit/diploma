@@ -13,6 +13,7 @@ public class O2ABehaviour extends CyclicBehaviour {
         System.out.println("02ABehaviour: " + myAgent.getName());
         AgentDataContainer agentDataContainer = (AgentDataContainer) myAgent.getO2AObject();
         if(agentDataContainer != null) {
+            System.out.println("O2A data: " + agentDataContainer.toString());
             myAgent.addBehaviour(new ClientBehaviour(myAgent, agentDataContainer));
         } else {
             block();

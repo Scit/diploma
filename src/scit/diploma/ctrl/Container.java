@@ -4,6 +4,7 @@ import jade.core.AID;
 import jade.core.ContainerID;
 import jade.wrapper.*;
 import scit.diploma.data.AgentDataContainer;
+import scit.diploma.data.QueryMaker;
 import scit.diploma.utils.AgentData;
 import scit.diploma.utils.AgentEvents;
 import scit.diploma.utils.ConditionalVariable;
@@ -16,11 +17,12 @@ public class Container implements AgentEvents, AgentData {
     private static final String SERVICE_NAME_TEMPLATE = "-serviceAgent";
     private static final String CLIENT_NAME_TEMPLATE = "-clientAgent";
 
-    private AgentContainer client;
+    private AgentController client;
     private AID serviceAID;
     private ContainerID containerID;
+    private boolean isActive = false;
 
-    public Container(AgentContainer client, AID serviceAID, ContainerID containerID) {
+    public Container(AgentController client, AID serviceAID, ContainerID containerID) {
         this.client = client;
         this.serviceAID = serviceAID;
         this.containerID = containerID;
@@ -31,11 +33,7 @@ public class Container implements AgentEvents, AgentData {
     }
 
     public boolean isActive() {
-        if (serviceAID == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return isActive;
     }
 
     public AID getServiceAID() {
@@ -51,12 +49,22 @@ public class Container implements AgentEvents, AgentData {
         String agentName = PrefixGenerator.getUniquePrefix() + SERVICE_NAME_TEMPLATE;
         AgentController ac = cc.createNewAgent(agentName, "scit.diploma.service.ServiceAgent", new Object[] {startUpLatch, containerID});
         ac.start();
+        try {
+            startUpLatch.waitOn();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("From: " + cc.getContainerName());
         System.out.println("To: " + containerID.getName());
     }
 
     public void doExecute(AgentDataContainer agentDataContainer) {
         // push o2a to o2aAgent
+        try {
+            client.putO2AObject(agentDataContainer, AgentController.ASYNC);
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -71,15 +79,22 @@ public class Container implements AgentEvents, AgentData {
                 try {
                     AgentController ac = cc.createNewAgent(agentName, "scit.diploma.client.ClientAgent", new Object[] {startUpLatch, this, serviceAID});
                     ac.start();
+                    client = ac;
+                    startUpLatch.waitOn();
                 } catch (StaleProxyException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 break;
+            case AgentEvents.EVENT_CLIENT_READY:
+                System.out.println("Client ready: " + aid.getName());
+                isActive = true;
         }
     }
 
     @Override
     public void onData(AID aid, AgentDataContainer agentDataContainer) {
-
+        System.out.println("KU-KU-KU: " + agentDataContainer.toString());
     }
 }

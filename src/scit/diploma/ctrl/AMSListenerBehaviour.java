@@ -1,4 +1,4 @@
-package scit.diploma.search;
+package scit.diploma.ctrl;
 
 import jade.core.ContainerID;
 import jade.domain.introspection.AMSSubscriber;

@@ -8,7 +8,7 @@ import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.QueryMaker;
 import scit.diploma.db.DBWorker;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -25,9 +25,12 @@ public class Main {
 
         try {
             List<Container> c = ContainersManager.getContainersList();
-            System.out.println(c.size());
-            c.get(2).doActivate();
+            c.get(1).doActivate();
+            System.in.read(new byte[5]);
+            c.get(1).doExecute(QueryMaker.selectTables());
         } catch (ControllerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

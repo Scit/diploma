@@ -7,6 +7,7 @@ import jade.core.AID;
  */
 public interface AgentEvents extends AgentInterface {
     public final static int EVENT_SERVICE_AFTER_MOVE = 1;
+    public final static int EVENT_CLIENT_READY = 2;
 
     public void onEvent(AID aid, int type);
 }

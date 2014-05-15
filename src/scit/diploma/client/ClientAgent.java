@@ -7,9 +7,11 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
 import scit.diploma.ctrl.Container;
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.utils.AgentData;
+import scit.diploma.utils.AgentEvents;
 import scit.diploma.utils.AgentInterface;
 import scit.diploma.utils.ConditionalVariable;
 
@@ -40,7 +42,14 @@ public class ClientAgent extends Agent {
                 startUpLatch.signal();
         }
 
+        ((AgentEvents) agentInterface).onEvent(new AID(getName(), AID.ISLOCALNAME), AgentEvents.EVENT_CLIENT_READY);
         addBehaviour(new O2ABehaviour());
+    }
+
+    protected void takeDown() {
+        ACLMessage msg = new ACLMessage(ACLMessage.CANCEL);
+        msg.addReceiver(serviceAID);
+        send(msg);
     }
 
     public AID getServiceAID() {

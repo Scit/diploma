@@ -67,7 +67,7 @@ public final class ContainersManager {
 
     private static void createControllerAgent() {
         try {
-            AgentController ac = containerController.createNewAgent(CONTROLLER_AGENT_NAME, "scit.diploma.search.ControllerAgent", null);
+            AgentController ac = containerController.createNewAgent(CONTROLLER_AGENT_NAME, "scit.diploma.ctrl.ControllerAgent", null);
             ContainersManager.ac = ac;
             ac.start();
         } catch (StaleProxyException e) {

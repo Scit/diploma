@@ -30,6 +30,7 @@ public class ClientBehaviour extends Behaviour {
     }
 
     public void action() {
+        System.out.println("ClientBehaviour started: " + state);
         ACLMessage message = null;
 
         switch (state) {

@@ -3,16 +3,9 @@ package scit.diploma.service;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.ContainerID;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
-import scit.diploma.ctrl.Container;
 import scit.diploma.ctrl.ContainersManager;
-import scit.diploma.search.ControllerAgent;
-import scit.diploma.utils.AgentData;
-import scit.diploma.utils.AgentEvents;
+import scit.diploma.ctrl.ControllerAgent;
 import scit.diploma.utils.AgentInterface;
 import scit.diploma.utils.ConditionalVariable;
 
@@ -49,11 +42,12 @@ public class ServiceAgent extends Agent {
     }
 
     protected void afterMove() {
+        addBehaviour(new ServiceBehaviour(this));
+
         System.out.println("After move: " + here());
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setConversationId(ControllerAgent.CONTROLLER_AGENT_CONVERSATION_ID);
         AID dest = new AID(ContainersManager.CONTROLLER_AGENT_NAME, AID.ISLOCALNAME);
-        System.out.println("After move: " + getName());
         msg.setContent(getName());
         try {
             msg.setContentObject(here());
@@ -62,8 +56,6 @@ public class ServiceAgent extends Agent {
         }
         msg.addReceiver(dest);
         send(msg);
-
-
         //System.out.println(agentInterface);
         //((AgentEvents) agentInterface).onEvent(aid, AgentEvents.EVENT_SERVICE_AFTER_MOVE);
 
