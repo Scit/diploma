@@ -41,6 +41,7 @@ public class ServiceBehaviour extends CyclicBehaviour {
                     }
 
                     agentDataContainer = dbw.execute(agentDataContainer);
+                    agentDataContainer.setParam(AgentDataContainer.KEY_CONTAINER_NAME, myAgent.here().getName());
 
                     // process response
                     try {

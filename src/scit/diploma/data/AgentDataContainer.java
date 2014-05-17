@@ -14,7 +14,7 @@ import static scit.diploma.db.DBWorker.*;
 public class AgentDataContainer implements Serializable {
     public final static String KEY_TABLE_NAME = "KEY_TABLE_NAME";
     public final static String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
-    public final static String KEY_SERVICE_NAME = "KEY_SERVICE_NAME";
+    public final static String KEY_CONTAINER_NAME = "KEY_CONTAINER_NAME";
 
     private HashMap<String, String> params = null;
     private NameTypePair[] metadata = null;

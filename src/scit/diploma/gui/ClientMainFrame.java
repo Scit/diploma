@@ -100,7 +100,6 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
         if(adjust) {
             return;
         }
-        System.out.println("***********************************8");
 
         Object source = event.getSource();
         if (source == containersList) {
@@ -116,7 +115,8 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
                 }
             }
         } else if (source == table.getSelectionModel()) {
-            String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
+            //String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
+            String tableName = "users";
             selectedContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
         }
     }
