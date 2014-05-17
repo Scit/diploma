@@ -100,4 +100,9 @@ public class ContainerHolder implements AgentEvents, AgentData {
     public void onData(AID aid, AgentDataContainer agentDataContainer) {
         ContainerHoldersManager.onContainerHolderTakeData(this, agentDataContainer);
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }
