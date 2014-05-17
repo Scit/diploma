@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 public class ClientMainFrame extends JFrame implements CHMListener, ActionListener, ListSelectionListener {
     private static ClientTable table = null;
     private static ContainerHoldersList containersList = null;
+    private static ContainerHolder selectedContainerHolder;
 
     private static ContainerController containerController = null;
 
@@ -95,26 +96,28 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
+        boolean adjust = event.getValueIsAdjusting();
+        if(adjust) {
+            return;
+        }
+        System.out.println("***********************************8");
+
         Object source = event.getSource();
-
         if (source == containersList) {
-            boolean adjust = event.getValueIsAdjusting();
-
-            if(! adjust) {
-                ContainerHoldersList list = (ContainerHoldersList) event.getSource();
-                int[] selections = list.getSelectedIndices();
-                for(int selection : selections) {
-                    // activate
-                    ContainerHolder containerHolder = (ContainerHolder) list.getModel().getElementAt(selection);
-                    try {
-                        containerHolder.doActivate();
-                    } catch (ControllerException e) {
-                        e.printStackTrace();
-                    }
+            ContainerHoldersList list = (ContainerHoldersList) event.getSource();
+            int[] selections = list.getSelectedIndices();
+            for(int selection : selections) {
+                // activate
+                selectedContainerHolder = (ContainerHolder) list.getModel().getElementAt(selection);
+                try {
+                    selectedContainerHolder.doActivate();
+                } catch (ControllerException e) {
+                    e.printStackTrace();
                 }
             }
-        } else if (source == table) {
-
+        } else if (source == table.getSelectionModel()) {
+            String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
+            selectedContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
         }
     }
 }
