@@ -13,7 +13,7 @@ import java.util.List;
  * Created by scit on 5/10/14.
  */
 public class ClientTable extends JTable {
-    public static final int TABLE_NAME_COLUMN_INDEX = 2;
+    public static final int TABLE_NAME_COLUMN_INDEX = 3;
 
     public ClientTable() {
         super();

@@ -16,6 +16,11 @@ public class AgentDataContainer implements Serializable {
     public final static String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
     public final static String KEY_CONTAINER_NAME = "KEY_CONTAINER_NAME";
 
+    public final static String KEY_DATA_TYPE = "KEY_DATA_TYPE";
+    public final static String VALUE_DATA_TYPE_TABLES = "VALUE_DATA_TYPE_TABLES";
+    public final static String VALUE_DATA_TYPE_CONTENT = "VALUE_DATA_TYPE_CONTENT";
+    public final static String VALUE_DATA_TYPE_EMPTY = "VALUE_DATA_TYPE_EMPTY";
+
     private HashMap<String, String> params = null;
     private NameTypePair[] metadata = null;
     private List<Object[]> data = null;

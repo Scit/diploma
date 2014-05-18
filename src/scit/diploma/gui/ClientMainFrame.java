@@ -7,11 +7,13 @@ import scit.diploma.ctrl.ContainerHolder;
 import scit.diploma.ctrl.ContainerHoldersManager;
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.QueryMaker;
+import scit.diploma.utils.AgentData;
 import scit.diploma.utils.CHMListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +25,9 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
     private static ClientTable table = null;
     private static ContainerHoldersList containersList = null;
     private static ContainerHolder selectedContainerHolder;
-
     private static ContainerController containerController = null;
+
+    private static String currentDataType = null;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -85,6 +88,7 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
                 break;
             case CHMListener.EVENT_ON_DATA:
                 table.fillTable(data);
+                currentDataType = data.getParam(AgentDataContainer.KEY_DATA_TYPE);
                 break;
         }
     }
@@ -115,9 +119,17 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
                 }
             }
         } else if (source == table.getSelectionModel()) {
-            //String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
-            String tableName = "users";
-            selectedContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
+            System.out.println(currentDataType + ": " + adjust);
+            if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_TABLES)) {
+                if(table.getSelectedRow() >= 0) {
+                    String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
+                    selectedContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
+                }
+            } else if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_CONTENT)) {
+
+            } else if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_EMPTY)) {
+
+            }
         }
     }
 }

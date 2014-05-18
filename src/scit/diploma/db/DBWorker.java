@@ -2,6 +2,7 @@ package scit.diploma.db;
 
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.ResponseMaker;
+import scit.diploma.utils.AgentData;
 
 import java.sql.*;
 import static scit.diploma.data.AgentDataContainer.*;
@@ -26,6 +27,7 @@ public class DBWorker {
         AgentDataContainer outputAgentDataContainer = null;
 
         try {
+            String dataType = AgentDataContainer.VALUE_DATA_TYPE_TABLES;
 
             connection = DriverManager.getConnection(url, user, password);
 
@@ -34,6 +36,7 @@ public class DBWorker {
                 resultSet = connection.getMetaData().getTables(null, "public", "%", new String[]{"TABLE"});
             } else if (agentDataContainer.getDataLength() > 0) {
                 // insert request
+                dataType = AgentDataContainer.VALUE_DATA_TYPE_EMPTY;
                 pst = connection.prepareStatement(agentDataContainer.getParam(KEY_REQUEST_STRING));
 
                 Object[] dataRow = agentDataContainer.getData().get(0);
@@ -45,12 +48,14 @@ public class DBWorker {
                 resultSet = null;
             } else {
                 // select request
+                dataType = AgentDataContainer.VALUE_DATA_TYPE_CONTENT;
                 pst = connection.prepareStatement(agentDataContainer.getParam(KEY_REQUEST_STRING));
 
                 resultSet = pst.executeQuery();
             }
 
             outputAgentDataContainer = ResponseMaker.makeResponse(resultSet, agentDataContainer);
+            outputAgentDataContainer.setParam(KEY_DATA_TYPE, dataType);
 
         } catch (Exception e) {
             e.printStackTrace();
