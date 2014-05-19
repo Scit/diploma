@@ -33,6 +33,7 @@ public class QueryMaker {
 
     public static AgentDataContainer insertData(Object[] dataRow, AgentDataContainer agentDataContainer) {
         String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
+        String metadataHash = agentDataContainer.getParam(KEY_METADATA_HASH);
         String queryString = "INSERT INTO " + tableName;
         StringPair queryParams = generateInsertParams(agentDataContainer.getMetadata());
 
@@ -46,12 +47,15 @@ public class QueryMaker {
 
         agentDataContainer = new AgentDataContainer(metadata, data);
         agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+        agentDataContainer.setParam(KEY_REQUEST_STRING, queryString);
+        agentDataContainer.setParam(KEY_METADATA_HASH, metadataHash);
 
         return agentDataContainer;
     }
 
     public static AgentDataContainer updateData(Object[] dataRow, AgentDataContainer agentDataContainer) {
         String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
+        String metadataHash = agentDataContainer.getParam(KEY_METADATA_HASH);
         String queryString = "UPDATE " + tableName + " SET ";
         queryString += generateUpdateParams(agentDataContainer.getMetadata());
         queryString += " WHERE id = ?";
@@ -65,6 +69,7 @@ public class QueryMaker {
         agentDataContainer = new AgentDataContainer(metadata, data);
         agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
         agentDataContainer.setParam(KEY_REQUEST_STRING, queryString);
+        agentDataContainer.setParam(KEY_METADATA_HASH, metadataHash);
 
         return agentDataContainer;
     }

@@ -15,6 +15,7 @@ public class AgentDataContainer implements Serializable {
     public final static String KEY_TABLE_NAME = "KEY_TABLE_NAME";
     public final static String KEY_REQUEST_STRING = "KEY_REQUEST_STRING";
     public final static String KEY_CONTAINER_NAME = "KEY_CONTAINER_NAME";
+    public final static String KEY_METADATA_HASH = "KEY_METADATA_HASH";
 
     public final static String KEY_DATA_TYPE = "KEY_DATA_TYPE";
     public final static String VALUE_DATA_TYPE_TABLES = "VALUE_DATA_TYPE_TABLES";

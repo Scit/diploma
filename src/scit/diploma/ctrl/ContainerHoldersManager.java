@@ -41,7 +41,7 @@ public final class ContainerHoldersManager {
 
     public static void init() {
         if(containerController == null ) {
-            createProjectContainer("192.168.111.104", "1099");
+            createProjectContainer("82.209.80.43", "1099");
         }
         if(ac == null) {
             createControllerAgent();

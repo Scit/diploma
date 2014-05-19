@@ -1,5 +1,7 @@
 package scit.diploma.data;
 
+import jade.lang.acl.MessageTemplate;
+import scit.diploma.utils.MetadataHasher;
 import scit.diploma.utils.NameTypePair;
 
 import java.sql.ResultSet;
@@ -16,11 +18,13 @@ public class ResponseMaker {
     public static AgentDataContainer makeResponse(ResultSet resultSet, AgentDataContainer agentDataContainer) {
         NameTypePair[] metadata = null;
         List<Object[]> data = null;
+        String metadataHash = "";
 
         if (resultSet != null) {
             try {
                 ResultSetMetaData rsmd = resultSet.getMetaData();
                 int columnCount = rsmd.getColumnCount();
+                MetadataHasher.reset();
 
                 metadata = new NameTypePair[columnCount];
                 for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -29,7 +33,10 @@ public class ResponseMaker {
                     int type = rsmd.getColumnType(columnIndex);
                     metadata[columnIndex - 1].setName(name);
                     metadata[columnIndex - 1].setType(type);
+
+                    MetadataHasher.add(type, name);
                 }
+                metadataHash = MetadataHasher.get();
 
                 data = new ArrayList<Object[]>();
                 while (resultSet.next()) {
@@ -47,6 +54,7 @@ public class ResponseMaker {
         String tableName = agentDataContainer.getParam(KEY_TABLE_NAME);
         agentDataContainer = new AgentDataContainer(metadata,data);
         agentDataContainer.setParam(KEY_TABLE_NAME, tableName);
+        agentDataContainer.setParam(KEY_METADATA_HASH, metadataHash);
 
         return agentDataContainer;
     }
