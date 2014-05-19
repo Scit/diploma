@@ -41,4 +41,15 @@ public class ClientTable extends JTable {
 
         this.setModel(tableModel);
     }
+
+    public Object[] getCleanRowAt(int row) {
+        int columnCount =  getColumnCount();
+        Object[] result = new Object[columnCount - 1]; // we don't use first column
+
+        for(int col=1; col < columnCount; col++) {
+            result[col-1] = this.getModel().getValueAt(row, col);
+        }
+
+        return result;
+    }
 }

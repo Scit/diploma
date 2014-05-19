@@ -1,33 +1,32 @@
 package scit.diploma.gui;
 
-import jade.core.ContainerID;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
 import scit.diploma.ctrl.ContainerHolder;
 import scit.diploma.ctrl.ContainerHoldersManager;
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.QueryMaker;
-import scit.diploma.utils.AgentData;
 import scit.diploma.utils.CHMListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableCellEditor;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by scit on 5/10/14.
  */
-public class ClientMainFrame extends JFrame implements CHMListener, ActionListener, ListSelectionListener {
+public class ClientMainFrame extends JFrame implements CHMListener, TableModelListener, ListSelectionListener {
     private static ClientTable table = null;
     private static ContainerHoldersList containersList = null;
-    private static ContainerHolder selectedContainerHolder;
     private static ContainerController containerController = null;
 
     private static String currentDataType = null;
+    private static ContainerHolder currentContainerHolder = null;
+    private static String currentTableName = null;
+    private static AgentDataContainer currentAgentDataContainer = null;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -87,15 +86,21 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
                 containerHolder.doExecute(QueryMaker.selectTables());
                 break;
             case CHMListener.EVENT_ON_DATA:
-                table.fillTable(data);
-                currentDataType = data.getParam(AgentDataContainer.KEY_DATA_TYPE);
+                if( ! data.getParam(AgentDataContainer.KEY_DATA_TYPE).equals(AgentDataContainer.VALUE_DATA_TYPE_EMPTY)) {
+                    // not insert/update operation
+                    table.fillTable(data);
+                    currentDataType = data.getParam(AgentDataContainer.KEY_DATA_TYPE);
+                    currentAgentDataContainer = data;
+                }
                 break;
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent event) {
-
+    public void tableChanged(TableModelEvent event) {
+        System.out.println("VALUE: " + table.getValueAt(event.getFirstRow(), event.getColumn()));
+        System.out.println(event.getType());
+        currentContainerHolder.doExecute(QueryMaker.updateData(table.getCleanRowAt(event.getFirstRow()), currentAgentDataContainer));
     }
 
     @Override
@@ -111,9 +116,9 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
             int[] selections = list.getSelectedIndices();
             for(int selection : selections) {
                 // activate
-                selectedContainerHolder = (ContainerHolder) list.getModel().getElementAt(selection);
+                currentContainerHolder = (ContainerHolder) list.getModel().getElementAt(selection);
                 try {
-                    selectedContainerHolder.doActivate();
+                    currentContainerHolder.doActivate();
                 } catch (ControllerException e) {
                     e.printStackTrace();
                 }
@@ -123,10 +128,12 @@ public class ClientMainFrame extends JFrame implements CHMListener, ActionListen
             if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_TABLES)) {
                 if(table.getSelectedRow() >= 0) {
                     String tableName = (String) table.getValueAt(table.getSelectedRow(), ClientTable.TABLE_NAME_COLUMN_INDEX);
-                    selectedContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
+                    currentTableName = tableName;
+                    currentContainerHolder.doExecute(QueryMaker.selectTableContent(tableName));
                 }
             } else if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_CONTENT)) {
-
+                table.getModel().removeTableModelListener(this);
+                table.getModel().addTableModelListener(this);
             } else if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_EMPTY)) {
 
             }
