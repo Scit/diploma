@@ -14,12 +14,16 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by scit on 5/10/14.
  */
-public class ClientMainFrame extends JFrame implements CHMListener, TableModelListener, ListSelectionListener {
+public class ClientMainFrame extends JFrame implements CHMListener, TableModelListener, ListSelectionListener, ActionListener {
     private static ClientTable table = null;
+    private static JButton back = null;
+    private static JButton insert = null;
     private static ContainerHoldersList containersList = null;
     private static ContainerController containerController = null;
 
@@ -50,6 +54,7 @@ public class ClientMainFrame extends JFrame implements CHMListener, TableModelLi
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1.0;
         c.weighty = 1.0;
+        c.gridy = 0;
         add(containersList, c);
 
         add(new JSeparator(JSeparator.VERTICAL));
@@ -57,7 +62,28 @@ public class ClientMainFrame extends JFrame implements CHMListener, TableModelLi
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 4.0;
         c.weighty = 1.0;
+        c.gridy = 0;
         add(new JScrollPane(table), c);
+
+        back = new JButton("Назад");
+        back.addActionListener(this);
+        insert = new JButton("Вставить");
+        insert.addActionListener(this);
+
+        JPanel bottomBar = new JPanel();
+        bottomBar.setBackground(Color.DARK_GRAY);
+
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        bottomBar.add(back, c);
+        bottomBar.add(insert, c);
+
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy = 1;
+
+        add(bottomBar, c);
+
 
         Toolkit tk = Toolkit.getDefaultToolkit();
         int xSize = ((int) tk.getScreenSize().getWidth());
@@ -137,6 +163,19 @@ public class ClientMainFrame extends JFrame implements CHMListener, TableModelLi
             } else if(currentDataType.equals(AgentDataContainer.VALUE_DATA_TYPE_EMPTY)) {
 
             }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        Object source = event.getSource();
+
+        if(source == back) {
+            currentContainerHolder.doExecute(QueryMaker.selectTables());
+        } else if (source == insert) {
+            System.out.println("Insert: " + currentAgentDataContainer.getMetadata().length);
+            InsertDialog insertDialog = new InsertDialog(currentAgentDataContainer.getMetadata());
+            insertDialog.setVisible(true);
         }
     }
 }
