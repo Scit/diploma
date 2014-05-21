@@ -7,6 +7,7 @@ import scit.diploma.ctrl.ContainerHoldersManager;
 import scit.diploma.data.AgentDataContainer;
 import scit.diploma.data.QueryMaker;
 import scit.diploma.utils.CHMListener;
+import scit.diploma.utils.NameTypePair;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -173,8 +174,16 @@ public class ClientMainFrame extends JFrame implements CHMListener, TableModelLi
         if(source == back) {
             currentContainerHolder.doExecute(QueryMaker.selectTables());
         } else if (source == insert) {
-            System.out.println("Insert: " + currentAgentDataContainer.getMetadata().length);
-            InsertDialog insertDialog = new InsertDialog(currentAgentDataContainer.getMetadata());
+            NameTypePair[] ntps = new NameTypePair[3];
+            for(int i=0; i < ntps.length; i++) {
+                ntps[i] = new NameTypePair();
+                ntps[i].setName("Name " + i);
+                ntps[i].setType(i);
+            }
+
+            //System.out.println("Insert: " + currentAgentDataContainer.getMetadata().length);
+            //InsertDialog insertDialog = new InsertDialog(currentAgentDataContainer.getMetadata());
+            InsertDialog insertDialog = new InsertDialog(ntps);
             insertDialog.setVisible(true);
         }
     }
