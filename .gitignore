@@ -2,4 +2,5 @@ lib/
 out/
 *.txt
 .idea/
-Diploma.iml
+*.iml
+target/
