@@ -1,5 +1,6 @@
 package scit.diploma.gui;
 
+import net.miginfocom.swing.MigLayout;
 import scit.diploma.utils.NameTypePair;
 
 import javax.swing.*;
@@ -11,18 +12,25 @@ import java.awt.*;
 public class InsertDialog extends JDialog {
     InsertDialog(NameTypePair[] metadata) {
         super();
-        setLayout(new FlowLayout());
-        setSize(100 * metadata.length, 200);
+        setLocationRelativeTo(null);//Центрируем окно
+        setLayout(new BorderLayout());
 
-        for(NameTypePair mdata : metadata) {
-            Box bh = Box.createHorizontalBox();
-            Box bv = Box.createVerticalBox();
+        JPanel fieldsPanel = new JPanel();
+        fieldsPanel.setLayout(new MigLayout(""));
+
+        for (NameTypePair mdata : metadata) {
             JLabel l = new JLabel(mdata.getName());
             JTextField t = new JTextField();
-            bv.add(l);
-            bv.add(t);
-            bh.add(bv);
-            add(bh);
+            fieldsPanel.add(l);
+            fieldsPanel.add(t, "span, w 150:200:300");
         }
+        add(fieldsPanel,BorderLayout.CENTER);
+        JPanel buttonsPanel = new JPanel();
+        JButton insert = new JButton("Вставить");
+        buttonsPanel.add(insert);
+        JButton insertWithReplication = new JButton("Вставить с реплицированием");
+        buttonsPanel.add(insertWithReplication);
+        add(buttonsPanel,BorderLayout.PAGE_END);
+        pack();
     }
 }
